@@ -1,2 +1,2 @@
 # go-practice
-test
+test2
