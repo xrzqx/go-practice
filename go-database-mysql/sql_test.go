@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"sync"
 	"time"
+	"database/sql"
 )
 
 func RequestExecAsyc(group *sync.WaitGroup){
@@ -13,6 +14,20 @@ func RequestExecAsyc(group *sync.WaitGroup){
 	group.Add(1)
 	db:= GetConnection()
 	defer db.Close()
+
+	ctx := context.Background()
+	sql_script := "INSERT INTO User(Name) VALUES('Test')"
+	_, err := db.ExecContext(ctx, sql_script)
+	if err != nil{
+		panic(err)
+	}
+	time.Sleep(1 * time.Millisecond)
+	
+}
+
+func RequestPrepareStatementAsyc(group *sync.WaitGroup, db *sql.DB){
+	defer group.Done()
+	group.Add(1)
 
 	ctx := context.Background()
 	sql_script := "INSERT INTO User(Name) VALUES('Test')"
@@ -50,31 +65,45 @@ func TestNumExecSql(t *testing.T)  {
 
 }
 
-func TestPrepareStatementSql(t *testing.T)  {
+// func TestPrepareStatementSql(t *testing.T)  {
+// 	db:= GetConnection()
+// 	defer db.Close()
+
+// 	ctx := context.Background()
+
+// 	sql_script := "INSERT INTO User(Name) VALUES(?)"
+// 	// _, err := db.ExecContext(ctx, sql_script)
+// 	statement, err := db.PrepareContext(ctx,sql_script)
+// 	if err != nil{
+// 		panic(err)
+// 	}
+// 	defer statement.Close()
+// 	// fmt.Println("Inserted new User")
+
+// 	for i := 0; i < 200; i++ {
+// 		Name := "Test"
+// 		_, err := statement.ExecContext(ctx, Name)
+// 		if err != nil{
+// 			panic(err)
+// 		}
+// 	}
+// 	fmt.Println("Prepare Statement Done")
+
+// }
+
+func TestNumPrepareStatementSql(t *testing.T)  {
 	db:= GetConnection()
 	defer db.Close()
-
-	ctx := context.Background()
-
-	sql_script := "INSERT INTO User(Name) VALUES(?)"
-	// _, err := db.ExecContext(ctx, sql_script)
-	statement, err := db.PrepareContext(ctx,sql_script)
-	if err != nil{
-		panic(err)
-	}
-	defer statement.Close()
-	// fmt.Println("Inserted new User")
-
+	group := &sync.WaitGroup{}
 	for i := 0; i < 200; i++ {
-		Name := "Test"
-		_, err := statement.ExecContext(ctx, Name)
-		if err != nil{
-			panic(err)
-		}
+		go RequestPrepareStatementAsyc(group,db)
 	}
-	fmt.Println("Prepare Statement Done")
+	group.Wait()
+	fmt.Println("Prepare Statement Async Done")
 
 }
+
+
 
 // func TestQueryCtx(t *testing.T)  {
 // 	db:= GetConnection()
