@@ -13,5 +13,4 @@ Prepare Statement Done<br/>
 Prepare Statement Async Done<br/>
 --- PASS: TestNumPrepareStatementSql (0.06s)<br/>
 PASS<br/>
-ok      go-database-mysql       1.335s<br/>
 
