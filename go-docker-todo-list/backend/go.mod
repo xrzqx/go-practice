@@ -1,4 +1,4 @@
-module github.com/xrzqx/go-practice
+module github.com/xrzqx/go-practice/go-docker-todo-list
 
 go 1.19
 
