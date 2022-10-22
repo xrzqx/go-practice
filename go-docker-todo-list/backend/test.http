@@ -1,0 +1,24 @@
+### Get Todo
+GET http://localhost:8080/todo
+Accept: application/json
+
+### create new todo
+POST http://localhost:8080/todo
+Accept: application/json
+Content-Type: application/json
+
+{
+  "note": "test",
+  "done": false
+}
+
+### update todo
+PUT http://localhost:8080/todo
+Accept: application/json
+Content-Type: application/json
+
+{
+  "id": 1,
+  "note": "test",
+  "done": false
+}
