@@ -1,4 +1,4 @@
-go-database-mysql<br/>
+# go-database-mysql
 
 === RUN   TestOpenConnection<br/>
 --- PASS: TestOpenConnection (0.00s)<br/>
