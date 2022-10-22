@@ -12,29 +12,27 @@ services:
     working_dir: /var/lib/mysql
     volumes:
       - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql
-#      - ./mysql/custom_cnf/conf.d/:/etc/mysql/conf.d
-#      - ./mysql/custom_cnf/mysqld.cnf:/etc/mysql/mysql.conf.d
     environment:
       - MYSQL_ROOT_PASSWORD=rahasia
       - MYSQL_DATABASE=demo_xrzqx_todo
       - MYSQL_TCP_PORT=5432
     expose:
       - 5432
-#  todo-backend:
-#    build: ./backend
-#    ports:
-#      - 8080:8080
-#    restart: on-failure
-#    environment:
-#      - DB_USER=root
-#      - DB_PASSWORD=rahasia
-#      - DB_HOST=todo-mysql
-#      - DB_PORT=5432
-#      - DB_DATABASE=demo_xrzqx_todo
-#    depends_on:
-#      - todo-mysql
-#      - todo-frontend
-#  todo-frontend:
-#    build: ./frontend
-#    ports:
-#      - 8081:8080
+  todo-backend:
+    build: ./backend
+    ports:
+      - 8080:8080
+    restart: on-failure
+    environment:
+      - DB_USER=root
+      - DB_PASSWORD=rahasia
+      - DB_HOST=todo-mysql
+      - DB_PORT=5432
+      - DB_DATABASE=demo_xrzqx_todo
+    depends_on:
+      - todo-mysql
+      - todo-frontend
+  todo-frontend:
+    build: ./frontend
+    ports:
+      - 8081:8080
