@@ -2,12 +2,11 @@ package handler
 
 import (
 	"encoding/json"
-	"io/ioutil"
-	"net/http"
-
 	"github.com/xrzqx/go-practice/go-docker-todo-list/db"
 	"github.com/xrzqx/go-practice/go-docker-todo-list/schema"
 	"github.com/xrzqx/go-practice/go-docker-todo-list/service"
+	"io/ioutil"
+	"net/http"
 )
 
 type todoHandler struct {

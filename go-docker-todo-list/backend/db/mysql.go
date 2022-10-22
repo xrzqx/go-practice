@@ -35,32 +35,31 @@ func (p *Mysql) GetAll() ([]schema.Todo, error) {
 }
 
 func (p *Mysql) Insert(todo *schema.Todo) (int, error) {
-	query := `
-		INSERT INTO todo (note, done)
-		VALUES($1, $2);
-	`
-	rows, err := p.DB.Query(query, todo.Note, convertBoolToBit(todo.Done))
+	query := `INSERT INTO 
+		todo(note, done) 
+		VALUES(?,?);
+		`
+	statement, err := p.DB.Prepare(query)
 	if err != nil {
 		return -1, err
 	}
-	defer rows.Close()
-	var id int
-	for rows.Next() {
-		if err := rows.Scan(&id); err != nil {
-			return -1, err
-		}
+	defer statement.Close()
+	res, err := statement.Exec(todo.Note, todo.Done)
+	if err != nil {
+		return -1, err
 	}
-	return id, nil
+	lid, err := res.LastInsertId()
+	return int(lid), nil
 }
 
 func (p *Mysql) Update(todo *schema.Todo) error {
 	query := `
 		UPDATE todo
-		SET note = $2, done = $3
-		WHERE id = $1;
+		SET note = ?, done = ?
+		WHERE id = ?;
 	`
 
-	rows, err := p.DB.Query(query, todo.ID, todo.Note, convertBoolToBit(todo.Done))
+	rows, err := p.DB.Query(query, todo.Note, todo.Done, todo.ID)
 	if err != nil {
 		return err
 	}
@@ -77,7 +76,7 @@ func (p *Mysql) Update(todo *schema.Todo) error {
 func (p *Mysql) Delete(id int) error {
 	query := `
 		DELETE FROM todo
-		WHERE id = $1;
+		WHERE id = ?;
 	`
 
 	if _, err := p.DB.Exec(query, id); err != nil {
@@ -92,13 +91,12 @@ func (p *Mysql) Close() {
 }
 
 func ConnectMysql() (*Mysql, error) {
-	//connStr, err := loadMysqlConfig()
-	//if err != nil {
-	//	return nil, err
-	//}
+	connStr, err := loadMysqlConfig()
+	if err != nil {
+		return nil, err
+	}
 
-	//db, err := sql.Open("mysql", connStr)
-	db, err := sql.Open("mysql", "root:rahasia@tcp(localhost:5432)/demo_xrzqx_todo")
+	db, err := sql.Open("mysql", connStr)
 	if err != nil {
 		return nil, err
 	}
@@ -136,9 +134,3 @@ func loadMysqlConfig() (string, error) {
 	return connStr, nil
 }
 
-func convertBoolToBit(val bool) int {
-	if val {
-		return 1
-	}
-	return 0
-}
