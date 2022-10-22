@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `demo_xrzqx_todo`.`todo` ;
 CREATE TABLE IF NOT EXISTS `demo_xrzqx_todo`.`todo` (
   `ID` INT NOT NULL AUTO_INCREMENT,
   `NOTE` TEXT NOT NULL,
-  `DONE` BIT NULL,
+  `DONE` TINYINT(1) NULL,
   PRIMARY KEY (`ID`))
 ENGINE = InnoDB;
 
